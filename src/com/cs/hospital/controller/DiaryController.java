@@ -24,8 +24,8 @@ public class DiaryController extends Controller {
 		int pageIndex = getParaToInt("pageIndex", 1);
 		int pageSize = getParaToInt("pageSize", 10);
 		Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
-				"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl",
-				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid AND r.isshow = 1 LEFT JOIN patient p ON r.pid = p.pid");
+				"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
+				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid AND r.isshow = 1 LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message GROUP BY rid ) m ON r.rid = m.rid ORDER BY r.ftime DESC");
 		
 		renderJson(recordDayPage);
 
@@ -52,23 +52,24 @@ public class DiaryController extends Controller {
 					String dest = curFilePath + "/" + fileName;
 					file.getFile().renameTo(new File(dest));
 
-					String datePath = ConstantsUtil.getDateFormat() + "\\" + fileName;
+					String datePath = ConstantsUtil.getDateFormat() + "/" + fileName;
 					pathList.add(datePath);
 				}
 			}
-			int uid = 1;
+			int uid = 1; //用户id
+			int pid = 1; //病人id
 			String title = getPara("title");
 			String content = getPara("content");
 			String ftime = ConstantsUtil.getDateFormat4mysql();
 			boolean succeed = Db.tx(new IAtom() {
 				public boolean run() throws SQLException {
-					RecordDay recordDay = new RecordDay().set("uid", 1).set("title", title).set("content", content)
+					RecordDay recordDay = new RecordDay().set("uid", uid).set("pid", pid).set("title", title).set("content", content)
 							.set("ftime", ftime);
 					recordDay.save();
 					int rid = recordDay.get("rid");
 					if (pathList.size() > 0) {
 						for (String path : pathList) {
-							Image image = new Image().set("rid", rid).set("url", path).set("utime", ftime);
+							Image image = new Image().set("rid", rid).set("iurl", path).set("utime", ftime);
 							if (image.save()) {
 								continue;
 							} else {
