@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.Random;
 
 public class ConstantsUtil {
-	
+
 	public static String filePath = "D:/software/apache-tomcat-7.0.84-windows-x64/apache-tomcat-7.0.84/webapps/upload/";
-	
+
 	public static String getDateFormat() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
 		return df.format(new Date());
@@ -38,6 +38,13 @@ public class ConstantsUtil {
 		int rannum = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 10000;// 获取5位随机数
 
 		return rannum + str;// 当前时间
+	}
+
+	public static String getDateFormat4mysql() {
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+
+		return simpleDateFormat.format(new Date());
 	}
 
 }

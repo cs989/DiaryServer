@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.jfinal.plugin.activerecord.Model;
 
-public class User extends Model<User> {
-	public static final User dao = new User();
+public class UserApp extends Model<UserApp> {
+	public static final UserApp dao = new UserApp();
 
 	public Profession getProfession() {
 		return Profession.dao.findById(get("pid"));

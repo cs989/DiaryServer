@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cs.hospital.model.User;
+import com.cs.hospital.model.UserApp;
 
 public class LoginUtil {
 
@@ -17,7 +17,7 @@ public class LoginUtil {
 			
 			Map<String, Object> para = new HashMap<String, Object>();
 			para.put("passwd", 1);
-			List<User> passwd = User.dao.find(sql,userName);
+			List<UserApp> passwd = UserApp.dao.find(sql,userName);
 			if(StringUtil.StringIsNullOrEmpty(passwd.toString()))
 				return false;
 

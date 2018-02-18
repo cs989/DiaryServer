@@ -1,7 +1,14 @@
 package com.cs.hospital.config;
 
-import com.cs.hospital.controller.*;
-import com.cs.hospital.model.*;
+import com.cs.hospital.controller.DiaryController;
+import com.cs.hospital.model.Department;
+import com.cs.hospital.model.Image;
+import com.cs.hospital.model.Message;
+import com.cs.hospital.model.Patient;
+import com.cs.hospital.model.Profession;
+import com.cs.hospital.model.RecordDay;
+import com.cs.hospital.model.UserApp;
+import com.cs.hospital.model.Video;
 import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -59,8 +66,8 @@ public class JfinalConfig extends JFinalConfig {
 		arp.addMapping("Profession", "pid", Profession.class); // 定义
 		arp.addMapping("RecordDay", RecordDay.class);
 		arp.addMapping("RecordDay", "rid", RecordDay.class); // 定义
-		arp.addMapping("User", User.class);
-		arp.addMapping("User", "uid", User.class); // 定义
+		arp.addMapping("UserApp", UserApp.class);
+		arp.addMapping("UserApp", "uid", UserApp.class); // 定义
 		arp.addMapping("Video", Video.class);
 		arp.addMapping("Video", "did", Video.class); // 定义
 

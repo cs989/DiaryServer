@@ -5,10 +5,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cs.hospital.model.Image;
+import com.cs.hospital.model.RecordDay;
 import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
+import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.upload.UploadFile;
 
 public class DiaryController extends Controller {
@@ -17,10 +20,21 @@ public class DiaryController extends Controller {
 		renderJson("测试成功！");
 	}
 
-	// 上传图片
-	public void upLoad() {
+	public void getRecordList() {
+		int pageIndex = getParaToInt("pageIndex", 1);
+		int pageSize = getParaToInt("pageSize", 10);
+		Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
+				"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl",
+				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid AND r.isshow = 1 LEFT JOIN patient p ON r.pid = p.pid");
 		
-		List<String> pathList =new ArrayList<>();
+		renderJson(recordDayPage);
+
+	}
+
+	// 上传记录信息
+	public void createRecord() {
+
+		List<String> pathList = new ArrayList<>();
 		try {
 			// 必须先调用getFile方法才能getPara
 			for (int i = 0; i <= 100; i++) {
@@ -38,18 +52,34 @@ public class DiaryController extends Controller {
 					String dest = curFilePath + "/" + fileName;
 					file.getFile().renameTo(new File(dest));
 
-					String datePath = curFilePath + "\\" + fileName;
+					String datePath = ConstantsUtil.getDateFormat() + "\\" + fileName;
 					pathList.add(datePath);
 				}
 			}
+			int uid = 1;
 			String title = getPara("title");
-			String context = getPara("context");
-			boolean succeed = Db.tx(new IAtom(){
-			    public boolean run() throws SQLException {
-			        int count = Db.update("INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)", 100, 123);
-			        int count2 = Db.update("update account set cash = cash + ? where id = ?", 100, 456);
-			        return count == 1 && count2 == 1;
-			    }
+			String content = getPara("content");
+			String ftime = ConstantsUtil.getDateFormat4mysql();
+			boolean succeed = Db.tx(new IAtom() {
+				public boolean run() throws SQLException {
+					RecordDay recordDay = new RecordDay().set("uid", 1).set("title", title).set("content", content)
+							.set("ftime", ftime);
+					recordDay.save();
+					int rid = recordDay.get("rid");
+					if (pathList.size() > 0) {
+						for (String path : pathList) {
+							Image image = new Image().set("rid", rid).set("url", path).set("utime", ftime);
+							if (image.save()) {
+								continue;
+							} else {
+								return false;
+							}
+						}
+						return true;
+					}
+
+					return true;
+				}
 			});
 			// 存储路径
 		} catch (Exception ex) {

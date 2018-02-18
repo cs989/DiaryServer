@@ -9,7 +9,7 @@ public class Message extends Model<Message> {
 		return RecordDay.dao.findById(get("rid").toString());
 	}
 
-	public User getUsers() {
-		return User.dao.findById(get("uid").toString());
+	public UserApp getUsers() {
+		return UserApp.dao.findById(get("uid").toString());
 	}
 }

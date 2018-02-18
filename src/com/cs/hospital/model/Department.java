@@ -7,7 +7,7 @@ import com.jfinal.plugin.activerecord.Model;
 public class Department extends Model<Department>{
 	public static final Department dao = new Department();
 	
-	public List<User> getUsers() {
-		return User.dao.find("select * from User where pid=?",  get("pid").toString());
+	public List<UserApp> getUsers() {
+		return UserApp.dao.find("select * from UserApp where pid=?",  get("pid").toString());
 	}
 }

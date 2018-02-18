@@ -11,8 +11,8 @@ public class RecordDay  extends Model<RecordDay>{
 		return Patient.dao.findById(get("pid"));
 	}
 	
-	public User getUser(){
-		return User.dao.findById(get("uid"));
+	public UserApp getUser(){
+		return UserApp.dao.findById(get("uid"));
 	}
 	
 	public List<Image> getImages() {
