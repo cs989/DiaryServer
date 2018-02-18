@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry exported="true" kind="lib" path="D:/workspace/DiaryServer/WebRoot/WEB-INF/lib/druid-1.0.29.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/workspace/DiaryServer/WebRoot/WEB-INF/lib/jfinal-3.3-bin-with-src.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/workspace/DiaryServer/WebRoot/WEB-INF/lib/mysql-connector-java-5.1.44-bin.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="D:/workspace/DiaryServer/WebRoot/WEB-INF/lib/cos-2017.5.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
