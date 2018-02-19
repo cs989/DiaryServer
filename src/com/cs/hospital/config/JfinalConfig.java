@@ -54,21 +54,21 @@ public class JfinalConfig extends JFinalConfig {
 
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(dp);
 
-		arp.addMapping("Department", Department.class);
+//		arp.addMapping("Department", Department.class);
 		arp.addMapping("Department", "did", Department.class); // 定义
-		arp.addMapping("Image", Image.class);
+//		arp.addMapping("Image", Image.class);
 		arp.addMapping("Image", "iid", Image.class); // 定义
-		arp.addMapping("Message", Message.class);
+//		arp.addMapping("Message", Message.class);
 		arp.addMapping("Message", "mid", Message.class); // 定义
-		arp.addMapping("Patient", Patient.class);
+//		arp.addMapping("Patient", Patient.class);
 		arp.addMapping("Patient", "pid", Patient.class); // 定义
-		arp.addMapping("Profession", Profession.class);
+//		arp.addMapping("Profession", Profession.class);
 		arp.addMapping("Profession", "pid", Profession.class); // 定义
-		arp.addMapping("RecordDay", RecordDay.class);
+//		arp.addMapping("RecordDay", RecordDay.class);
 		arp.addMapping("RecordDay", "rid", RecordDay.class); // 定义
-		arp.addMapping("UserApp", UserApp.class);
+//		arp.addMapping("UserApp", UserApp.class);
 		arp.addMapping("UserApp", "uid", UserApp.class); // 定义
-		arp.addMapping("Video", Video.class);
+//		arp.addMapping("Video", Video.class);
 		arp.addMapping("Video", "did", Video.class); // 定义
 
 		me.add(arp);
