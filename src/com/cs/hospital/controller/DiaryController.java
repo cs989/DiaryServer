@@ -28,6 +28,8 @@ public class DiaryController extends Controller {
 				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid AND r.isshow = 1 LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message GROUP BY rid ) m ON r.rid = m.rid ORDER BY r.ftime DESC");
 
 		renderJson(recordDayPage);
+		
+		
 
 	}
 
