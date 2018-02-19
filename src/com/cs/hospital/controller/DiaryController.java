@@ -10,6 +10,7 @@ import com.cs.hospital.model.Message;
 import com.cs.hospital.model.RecordDay;
 import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.core.Controller;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.upload.UploadFile;
 
@@ -19,17 +20,31 @@ public class DiaryController extends Controller {
 		renderJson("测试成功！");
 	}
 
+	// 删除info的Record记录
+	public void deleteRecord() {
+		int rid = getParaToInt("rid", 0);
+		try {
+			if (rid != 0) {
+				int count1 = Db.update("update recordday set isshow = 0 where rid = ?", rid);
+				if (count1 == 1)
+					renderJson("success");
+			}
+			renderJson("failed");
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
 	// 分页获取记录信息
 	public void getRecordList() {
 		int pageIndex = getParaToInt("pageIndex", 1);
 		int pageSize = getParaToInt("pageSize", 10);
 		Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
 				"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
-				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid AND r.isshow = 1 LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message GROUP BY rid ) m ON r.rid = m.rid ORDER BY r.ftime DESC");
+				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message GROUP BY rid ) m ON r.rid = m.rid WHERE r.isshow = 1 ORDER BY r.ftime DESC");
 
 		renderJson(recordDayPage);
-		
-		
 
 	}
 
