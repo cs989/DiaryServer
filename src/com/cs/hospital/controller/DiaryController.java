@@ -12,6 +12,7 @@ import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.upload.UploadFile;
 
 public class DiaryController extends Controller {
@@ -71,6 +72,11 @@ public class DiaryController extends Controller {
 		try {
 			if (rid != 0) {
 				List<Image> imageList = RecordDay.dao.findById(rid).getImages();
+
+				//
+				// List<Record> imageList = Db.find(
+				// "SELECT m.*,u.name FROM message m LEFT JOIN userapp u ON
+				// m.uid = u.uid WHERE m.rid = ?", rid);
 				renderJson(imageList);
 			} else {
 				renderJson("failed");
@@ -87,7 +93,9 @@ public class DiaryController extends Controller {
 		int rid = getParaToInt("rid", 0);
 		try {
 			if (rid != 0) {
-				List<Message> messageList = RecordDay.dao.findById(rid).getMessages();
+
+				List<Message> messageList = Message.dao.find(
+						"SELECT m.*,u.name FROM message m LEFT JOIN userapp u ON m.uid = u.uid WHERE m.rid = ?", rid);
 				renderJson(messageList);
 			} else {
 				renderJson("failed");
@@ -106,7 +114,7 @@ public class DiaryController extends Controller {
 		String netPath = getPara("netPath");
 		String[] ary = netPath.split(",");
 		for (String s : ary) {
-			if (s != "")
+			if (s.length() > 0)
 				pathList.add(s);
 		}
 		String title = getPara("title");
@@ -157,7 +165,7 @@ public class DiaryController extends Controller {
 			String netPath = getPara("netPath");
 			String[] ary = netPath.split(",");
 			for (String s : ary) {
-				if (s != "")
+				if (s.length() > 0)
 					pathList.add(s);
 			}
 			String title = getPara("title");
