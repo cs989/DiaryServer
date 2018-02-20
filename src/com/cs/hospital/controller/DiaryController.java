@@ -43,7 +43,7 @@ public class DiaryController extends Controller {
 		int pageSize = getParaToInt("pageSize", 10);
 		Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
 				"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
-				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message GROUP BY rid ) m ON r.rid = m.rid WHERE r.isshow = 1 ORDER BY r.ftime DESC");
+				"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message where isshow = 1 GROUP BY rid ) m ON r.rid = m.rid WHERE r.isshow = 1 ORDER BY r.ftime DESC");
 
 		renderJson(recordDayPage);
 
@@ -95,8 +95,45 @@ public class DiaryController extends Controller {
 			if (rid != 0) {
 
 				List<Message> messageList = Message.dao.find(
-						"SELECT m.*,u.name FROM message m LEFT JOIN userapp u ON m.uid = u.uid WHERE m.rid = ?", rid);
+						"SELECT m.*,u.name FROM message m LEFT JOIN userapp u ON m.uid = u.uid WHERE m.isshow = 1 AND u.isshow = 1 AND m.rid = ? ORDER BY m.time", rid);
 				renderJson(messageList);
+			} else {
+				renderJson("failed");
+			}
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
+	// 根据rid获取message的对象列表
+	public void createMsg() {
+
+		String content = getPara("content");
+		int rid = getParaToInt("rid", 0);
+		int uid = getParaToInt("uid", 1);
+		String time = ConstantsUtil.getDateFormat4mysql();
+		try {
+			if (rid != 0 && uid != 0) {
+				new Message().set("rid", rid).set("uid", uid).set("content", content).set("time", time).save();
+				renderJson("success");
+			} else {
+				renderJson("failed");
+			}
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
+	// 根据rid获取message的对象列表
+	public void deleteMsgByMid() {
+
+		int mid = getParaToInt("mid", 0);
+		try {
+			if (mid != 0) {
+				Message.dao.findById(mid).set("isshow", 0).update();
+				renderJson("success");
 			} else {
 				renderJson("failed");
 			}
