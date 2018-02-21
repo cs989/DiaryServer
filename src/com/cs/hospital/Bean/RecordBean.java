@@ -4,7 +4,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.cs.hospital.model.Image;
+import com.cs.hospital.model.Patient;
 import com.cs.hospital.model.RecordDay;
+import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
 import com.jfinal.plugin.activerecord.Record;
@@ -42,9 +44,8 @@ public class RecordBean {
 		return Db.tx(new IAtom() {
 			public boolean run() throws SQLException {
 
-				int count1 = Db.update(
-						"update recordday set uid = ?, pid = ?, title = ?, content = ? where rid = ?", uid,
-						pid, title, content, rid);
+				int count1 = Db.update("update recordday set uid = ?, pid = ?, title = ?, content = ? where rid = ?",
+						uid, pid, title, content, rid);
 						// Record record = Db.findById("recordday",
 						// rid).set("uid", uid).set("pid", pid).set("title",
 						// title)
@@ -68,4 +69,22 @@ public class RecordBean {
 			}
 		});
 	}
+
+	public static boolean CreatPatient(int pno, int uid, String name, String sex, String birthday, String tel,
+			String ptime, String pcondition, String purl) {
+
+		return new Patient().set("pno", pno).set("uid", uid).set("name", name).set("sex", sex).set("birthday", birthday)
+				.set("tel", tel).set("ptime", ptime).set("pcondition", pcondition).set("purl", purl).save();
+
+	}
+
+	public static boolean UpdatePatient(int pid, int pno, int uid, String name, String sex, String birthday, String tel,
+			String ptime, String pcondition, String purl) {
+
+		return Db.update(
+				"update recordday set pno = ?, uid = ?, name = ?, sex = ?, birthday = ?, tel = ?, ptime = ?, pcondition = ?, purl = ? where pid = ?",
+				pno, uid, name, sex, birthday, tel, ptime, pcondition, purl, pid) == 1;
+
+	}
+
 }

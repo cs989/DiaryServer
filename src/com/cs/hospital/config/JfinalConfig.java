@@ -2,6 +2,7 @@ package com.cs.hospital.config;
 
 import com.cs.hospital.controller.DiaryController;
 import com.cs.hospital.model.Department;
+import com.cs.hospital.model.Focus;
 import com.cs.hospital.model.Image;
 import com.cs.hospital.model.Message;
 import com.cs.hospital.model.Patient;
@@ -70,6 +71,7 @@ public class JfinalConfig extends JFinalConfig {
 		arp.addMapping("UserApp", "uid", UserApp.class); // 定义
 //		arp.addMapping("Video", Video.class);
 		arp.addMapping("Video", "did", Video.class); // 定义
+		arp.addMapping("focus", "fid", Focus.class); // 定义
 
 		me.add(arp);
 	}
