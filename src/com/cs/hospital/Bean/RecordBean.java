@@ -70,7 +70,7 @@ public class RecordBean {
 		});
 	}
 
-	public static boolean CreatPatient(int pno, int uid, String name, String sex, String birthday, String tel,
+	public static boolean CreatPatient(String pno, int uid, String name, String sex, String birthday, String tel,
 			String ptime, String pcondition, String purl) {
 
 		return new Patient().set("pno", pno).set("uid", uid).set("name", name).set("sex", sex).set("birthday", birthday)
@@ -78,11 +78,11 @@ public class RecordBean {
 
 	}
 
-	public static boolean UpdatePatient(int pid, int pno, int uid, String name, String sex, String birthday, String tel,
-			String ptime, String pcondition, String purl) {
+	public static boolean UpdatePatient(int pid, String pno, int uid, String name, String sex, String birthday,
+			String tel, String ptime, String pcondition, String purl) {
 
 		return Db.update(
-				"update recordday set pno = ?, uid = ?, name = ?, sex = ?, birthday = ?, tel = ?, ptime = ?, pcondition = ?, purl = ? where pid = ?",
+				"update patient set pno = ?, uid = ?, name = ?, sex = ?, birthday = ?, tel = ?, etime = ?, pcondition = ?, purl = ? where pid = ?",
 				pno, uid, name, sex, birthday, tel, ptime, pcondition, purl, pid) == 1;
 
 	}

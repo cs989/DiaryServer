@@ -9,6 +9,7 @@ import com.cs.hospital.model.Patient;
 import com.cs.hospital.model.Profession;
 import com.cs.hospital.model.RecordDay;
 import com.cs.hospital.model.UserApp;
+import com.cs.hospital.model.Version;
 import com.cs.hospital.model.Video;
 import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.config.Constants;
@@ -72,6 +73,7 @@ public class JfinalConfig extends JFinalConfig {
 //		arp.addMapping("Video", Video.class);
 		arp.addMapping("Video", "did", Video.class); // 定义
 		arp.addMapping("focus", "fid", Focus.class); // 定义
+		arp.addMapping("version", "vid", Version.class); // 定义
 
 		me.add(arp);
 	}

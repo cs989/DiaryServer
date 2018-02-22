@@ -75,11 +75,16 @@ public class DiaryController extends Controller {
 
 	// 创建患者信息（不含图片）
 	public void creategPatient() {
-		int pno = getParaToInt("pno", 0);
+		String pno = getPara("pno");
 		int uid = getParaToInt("uid", 1);
 		String name = getPara("name");
 		String sex = getPara("sex");
 		String birthday = getPara("birthday");
+		if (birthday.equals(""))
+			birthday = "2000-01-01 00:00:00";
+		else {
+			birthday = birthday + " 00:00:00";
+		}
 		String tel = getPara("tel");
 		String ptime = ConstantsUtil.getDateFormat4mysql();
 		String pcondition = getPara("pcondition");
@@ -116,11 +121,16 @@ public class DiaryController extends Controller {
 
 				datePath = ConstantsUtil.getDateFormat() + "/" + fileName;
 			}
-			int pno = getParaToInt("pno", 0);
+			String pno = getPara("pno");
 			int uid = getParaToInt("uid", 1);
 			String name = getPara("name");
 			String sex = getPara("sex");
 			String birthday = getPara("birthday");
+			if (birthday.equals(""))
+				birthday = "2000-01-01 00:00:00";
+			else {
+				birthday = birthday + " 00:00:00";
+			}
 			String tel = getPara("tel");
 			String ptime = ConstantsUtil.getDateFormat4mysql();
 			String pcondition = getPara("pcondition");
@@ -140,7 +150,7 @@ public class DiaryController extends Controller {
 	// 修改患者信息（不含图片）
 	public void updatePatientByPid() {
 		int pid = getParaToInt("pid", 0);
-		int pno = getParaToInt("pno", 0);
+		String pno = getPara("pno");
 		int uid = getParaToInt("uid", 1);
 		String name = getPara("name");
 		String sex = getPara("sex");
@@ -182,7 +192,7 @@ public class DiaryController extends Controller {
 				datePath = ConstantsUtil.getDateFormat() + "/" + fileName;
 			}
 			int pid = getParaToInt("pid", 0);
-			int pno = getParaToInt("pno", 0);
+			String pno = getPara("pno");
 			int uid = getParaToInt("uid", 1);
 			String name = getPara("name");
 			String sex = getPara("sex");
@@ -405,5 +415,13 @@ public class DiaryController extends Controller {
 			renderJson(ex.toString());
 		}
 		renderJson("success");
+	}
+
+	public void getVersionCode() {
+		try {
+			renderJson(Db.findFirst("SELECT * FROM VERSION GROUP BY ptime DESC"));
+		} catch (Exception ex) {
+			renderJson(ex.toString());
+		}
 	}
 }
