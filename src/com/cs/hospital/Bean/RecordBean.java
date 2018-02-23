@@ -3,6 +3,7 @@ package com.cs.hospital.Bean;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.cs.hospital.model.Focus;
 import com.cs.hospital.model.Image;
 import com.cs.hospital.model.Patient;
 import com.cs.hospital.model.RecordDay;
@@ -85,6 +86,15 @@ public class RecordBean {
 				"update patient set pno = ?, uid = ?, name = ?, sex = ?, birthday = ?, tel = ?, etime = ?, pcondition = ?, purl = ? where pid = ?",
 				pno, uid, name, sex, birthday, tel, ptime, pcondition, purl, pid) == 1;
 
+	}
+
+	public static void updateFocus(int pid, int uid, boolean isCreate) {
+		if (isCreate) {
+			new Focus().set("pid", pid).set("uid", uid).save();
+		} else {
+			Db.update("delete * from focus where pid = ? and uid = ?", pid, uid);
+
+		}
 	}
 
 }

@@ -229,7 +229,7 @@ public class DiaryController extends Controller {
 	}
 
 	// 删除患者信息
-	public void deletePatientByRid() {
+	public void deletePatientByPid() {
 		int pid = getParaToInt("pid", 0);
 		try {
 			if (pid != 0) {
@@ -415,6 +415,22 @@ public class DiaryController extends Controller {
 			renderJson(ex.toString());
 		}
 		renderJson("success");
+	}
+
+	public void updateFocus() {
+		int uid = 1; // 用户id
+		int pid = getParaToInt("pid", 0);
+		boolean isCreate = getParaToBoolean("isCreate", false);
+		try {
+			RecordBean.updateFocus(pid, uid, isCreate);
+		} catch (Exception ex) {
+			renderJson(ex.toString());
+		}
+		if (isCreate)
+			renderJson("create");
+		else
+			renderJson("delete");
+
 	}
 
 	public void getVersionCode() {
