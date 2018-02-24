@@ -417,6 +417,16 @@ public class DiaryController extends Controller {
 		renderJson("success");
 	}
 
+	public void loginCheck() {
+		String username = getPara("username");
+		String password = getPara("password");
+		try {
+			renderJson(Db.findFirst("SELECT uid,pid FROM userapp where lname = ? and password = ? and isshow = 1 ",username,password));
+		} catch (Exception ex) {
+			renderJson(ex.toString());
+		}
+	}
+
 	public void updateFocus() {
 		int uid = 1; // 用户id
 		int pid = getParaToInt("pid", 0);
