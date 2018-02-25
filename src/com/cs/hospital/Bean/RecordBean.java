@@ -7,6 +7,7 @@ import com.cs.hospital.model.Focus;
 import com.cs.hospital.model.Image;
 import com.cs.hospital.model.Patient;
 import com.cs.hospital.model.RecordDay;
+import com.cs.hospital.model.UserApp;
 import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
@@ -88,12 +89,27 @@ public class RecordBean {
 
 	}
 
+	public static boolean CreateUser(String name, String sex, String tel, String ptime, String lname, String password,
+			String uurl) {
+
+		return new UserApp().set("name", name).set("sex", sex).set("tel", tel).set("utime", ptime).set("lname", lname)
+				.set("password", password).set("uurl", uurl).save();
+
+	}
+
+	public static boolean UpdateUser(int uid, String name, String sex, String tel, String ptime, String password,
+			String uurl) {
+
+		return Db.update("update userapp set name = ?, sex = ?, tel = ?, password = ?, uurl = ? where uid = ?", name,
+				sex, tel, password, uurl, uid) == 1;
+
+	}
+
 	public static void updateFocus(int pid, int uid, boolean isCreate) {
 		if (isCreate) {
 			new Focus().set("pid", pid).set("uid", uid).save();
 		} else {
-			Db.update("delete * from focus where pid = ? and uid = ?", pid, uid);
-
+			Db.update("delete  from focus where pid = ? and uid = ?", pid, uid);
 		}
 	}
 

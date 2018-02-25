@@ -9,6 +9,7 @@ import com.cs.hospital.model.Image;
 import com.cs.hospital.model.Message;
 import com.cs.hospital.model.Patient;
 import com.cs.hospital.model.RecordDay;
+import com.cs.hospital.model.UserApp;
 import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Db;
@@ -61,9 +62,11 @@ public class DiaryController extends Controller {
 
 		int pageIndex = getParaToInt("pageIndex", 1);
 		int pageSize = getParaToInt("pageSize", 10);
+		int uid = getParaToInt("uid", 0);
 		try {
-			Page<Patient> recordDayPage = Patient.dao.paginate(pageIndex, pageSize, "SELECT p.*,u.name",
-					"FROM patient p LEFT JOIN userapp  u  ON p.uid = u.uid WHERE p.isshow = 1 AND u.isshow = 1 ORDER BY p.ptime DESC");
+			Page<Patient> recordDayPage = Patient.dao.paginate(pageIndex, pageSize, "SELECT p.*,u.name,f.uid AS userid",
+					"FROM patient p LEFT JOIN userapp  u  ON p.uid = u.uid  LEFT JOIN focus f ON p.pid = f.pid WHERE p.isshow = 1 AND u.isshow = 1  AND (f.uid = ? OR f.uid IS NULL) ORDER BY p.ptime DESC",
+					uid);
 
 			renderJson(recordDayPage);
 		} catch (Exception ex) {
@@ -421,14 +424,142 @@ public class DiaryController extends Controller {
 		String username = getPara("username");
 		String password = getPara("password");
 		try {
-			renderJson(Db.findFirst("SELECT uid,pid FROM userapp where lname = ? and password = ? and isshow = 1 ",username,password));
+			renderJson(Db.findFirst("SELECT uid,pid FROM userapp where lname = ? and password = ? and isshow = 1 ",
+					username, password));
 		} catch (Exception ex) {
 			renderJson(ex.toString());
 		}
 	}
 
+	// 创建用户信息
+	public void createUser() {
+		String name = getPara("name");
+		String sex = getPara("sex");
+		String tel = getPara("tel");
+		String ptime = ConstantsUtil.getDateFormat4mysql();
+		String lname = getPara("lname");
+		String password = getPara("password");
+		String uurl = getPara("uurl");
+		try {
+			RecordBean.CreateUser(name, sex, tel, ptime, lname, password, uurl);
+			renderJson("success");
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
+	// 创建用户信息（含图片）
+	public void createUserImage() {
+
+		try {
+			String curFilePath = ConstantsUtil.getFileName();
+			String fileName = ConstantsUtil.getRandomFileName();
+			UploadFile file = getFile("file0");
+			String datePath = "";
+			if (file.getFile().length() > 5 * 1024 * 1024) {
+				renderJson("文件长度超过限制，必须小于5M");
+			} else {
+				// 上传文件
+				String type = file.getFileName().substring(file.getFileName().lastIndexOf(".")); // 获取文件的后缀
+				fileName = fileName + type; // 对文件重命名取得的文件名+后缀
+				String dest = curFilePath + "/" + fileName;
+				file.getFile().renameTo(new File(dest));
+
+				datePath = ConstantsUtil.getDateFormat() + "/" + fileName;
+			}
+			String name = getPara("name");
+			String sex = getPara("sex");
+			String tel = getPara("tel");
+			String ptime = ConstantsUtil.getDateFormat4mysql();
+			String lname = getPara("lname");
+			String password = getPara("password");
+			String uurl = datePath;
+			RecordBean.CreateUser(name, sex, tel, ptime, lname, password, uurl);
+			renderJson("success");
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
+	// 修改患者信息（不含图片）
+	public void updateUserByUid() {
+		int uid = getParaToInt("uid", 1);
+		String name = getPara("name");
+		String sex = getPara("sex");
+		String tel = getPara("tel");
+		String ptime = ConstantsUtil.getDateFormat4mysql();
+		String password = getPara("password");
+		String uurl = getPara("uurl");
+		try {
+			if (uid != 0) {
+				RecordBean.UpdateUser(uid, name, sex, tel, ptime, password, uurl);
+				renderJson("success");
+			} else {
+				renderJson("failed");
+			}
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
+	// 修改患者信息（含图片）
+	public void updateUserByUidImage() {
+
+		try {
+			String curFilePath = ConstantsUtil.getFileName();
+			String fileName = ConstantsUtil.getRandomFileName();
+			UploadFile file = getFile("file0");
+			String datePath = "";
+			if (file.getFile().length() > 5 * 1024 * 1024) {
+				renderJson("文件长度超过限制，必须小于5M");
+			} else {
+				// 上传文件
+				String type = file.getFileName().substring(file.getFileName().lastIndexOf(".")); // 获取文件的后缀
+				fileName = fileName + type; // 对文件重命名取得的文件名+后缀
+				String dest = curFilePath + "/" + fileName;
+				file.getFile().renameTo(new File(dest));
+
+				datePath = ConstantsUtil.getDateFormat() + "/" + fileName;
+			}
+			int uid = getParaToInt("uid", 1);
+			String name = getPara("name");
+			String sex = getPara("sex");
+			String tel = getPara("tel");
+			String ptime = ConstantsUtil.getDateFormat4mysql();
+			String password = getPara("password");
+			String uurl = datePath;
+			if (uid != 0) {
+				RecordBean.UpdateUser(uid, name, sex, tel, ptime, password, uurl);
+				renderJson("success");
+			} else {
+				renderJson("failed");
+			}
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
+	// 获取患者信息
+	public void getUserByUid() {
+		int uid = getParaToInt("uid", 0);
+		try {
+			if (uid != 0) {
+				renderJson(UserApp.dao.findById(uid));
+			} else {
+				renderJson("failed");
+			}
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
 	public void updateFocus() {
-		int uid = 1; // 用户id
+		int uid = getParaToInt("uid", 0); // 用户id
 		int pid = getParaToInt("pid", 0);
 		boolean isCreate = getParaToBoolean("isCreate", false);
 		try {
