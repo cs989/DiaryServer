@@ -43,18 +43,29 @@ public class DiaryController extends Controller {
 	public void getRecordList() {
 		int pageIndex = getParaToInt("pageIndex", 1);
 		int pageSize = getParaToInt("pageSize", 10);
-		try {
-			Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
-					"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
-					"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message where isshow = 1 GROUP BY rid ) m ON r.rid = m.rid WHERE r.isshow = 1 ORDER BY r.ftime DESC");
+		boolean isFocus = getParaToBoolean("isFocus", false);
+		int uid = getParaToInt("uid", 0);
+		String tepsql = "";
+		if (isFocus)
+			tepsql = "INNER JOIN (SELECT * FROM  focus WHERE uid = " + uid + " ) f ON r.pid=f.pid";
+		else {
+			tepsql = "";
+		}
 
-			renderJson(recordDayPage);
+		try {
+			if (uid != 0) {
+				Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
+						"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
+						"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message where isshow = 1 GROUP BY rid ) m ON r.rid = m.rid "
+								+ tepsql + " WHERE r.isshow = 1 ORDER BY r.ftime DESC");
+
+				renderJson(recordDayPage);
+			}
 
 		} catch (Exception ex) {
 			// ex.printStackTrace();
 			renderJson(ex.toString());
 		}
-
 	}
 
 	// 分页获取患者信息
@@ -63,10 +74,18 @@ public class DiaryController extends Controller {
 		int pageIndex = getParaToInt("pageIndex", 1);
 		int pageSize = getParaToInt("pageSize", 10);
 		int uid = getParaToInt("uid", 0);
+		boolean isFocus = getParaToBoolean("isFocus", false);
+		String tepsql = "";
+		if (isFocus)
+			tepsql = "(f.uid = ?)";
+		else {
+			tepsql = "(f.uid IS NULL OR f.uid = ?)";
+		}
 		try {
 			Page<Patient> recordDayPage = Patient.dao.paginate(pageIndex, pageSize, "SELECT p.*,u.name,f.uid AS userid",
-					"FROM patient p LEFT JOIN userapp  u  ON p.uid = u.uid  LEFT JOIN focus f ON p.pid = f.pid WHERE p.isshow = 1 AND u.isshow = 1  AND (f.uid = ? OR f.uid IS NULL) ORDER BY p.ptime DESC",
-					uid);
+					"FROM patient p LEFT JOIN userapp  u  ON p.uid = u.uid LEFT JOIN (SELECT * FROM focus WHERE uid = ?) f ON p.pid = f.pid WHERE p.isshow = 1 AND u.isshow = 1 AND "
+							+ tepsql + " ORDER BY p.ptime DESC",
+					uid, uid);
 
 			renderJson(recordDayPage);
 		} catch (Exception ex) {
