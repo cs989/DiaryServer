@@ -45,26 +45,41 @@ public class DiaryController extends Controller {
 		int pageSize = getParaToInt("pageSize", 10);
 		boolean isFocus = getParaToBoolean("isFocus", false);
 		int uid = getParaToInt("uid", 0);
-		String tepsql = "";
-		if (isFocus)
-			tepsql = "INNER JOIN (SELECT * FROM  focus WHERE uid = " + uid + " ) f ON r.pid=f.pid";
-		else {
-			tepsql = "";
-		}
-
-		try {
+		int pro_id = getParaToInt("pro_id", 3);
+		if (pro_id == 3) {
 			if (uid != 0) {
-				Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
-						"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
-						"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message where isshow = 1 GROUP BY rid ) m ON r.rid = m.rid "
-								+ tepsql + " WHERE r.isshow = 1 ORDER BY r.ftime DESC");
+				try {
+					Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
+							"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
+							"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message WHERE isshow = 1 GROUP BY rid ) m ON r.rid = m.rid WHERE r.isshow = 1 AND r.pid IN (SELECT p.pid FROM patient p INNER JOIN userapp u WHERE  p.pno=u.lname) ORDER BY r.ftime DESC");
+					renderJson(recordDayPage);
+				} catch (Exception ex) {
+					// ex.printStackTrace();
+					renderJson(ex.toString());
+				}
 
-				renderJson(recordDayPage);
 			}
+		} else {
+			String tepsql = "";
+			if (isFocus)
+				tepsql = "INNER JOIN (SELECT * FROM  focus WHERE uid = " + uid + " ) f ON r.pid=f.pid";
+			else {
+				tepsql = "";
+			}
+			try {
+				if (uid != 0) {
+					Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
+							"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
+							"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message where isshow = 1 GROUP BY rid ) m ON r.rid = m.rid "
+									+ tepsql + " WHERE r.isshow = 1 ORDER BY r.ftime DESC");
 
-		} catch (Exception ex) {
-			// ex.printStackTrace();
-			renderJson(ex.toString());
+					renderJson(recordDayPage);
+				}
+
+			} catch (Exception ex) {
+				// ex.printStackTrace();
+				renderJson(ex.toString());
+			}
 		}
 	}
 
