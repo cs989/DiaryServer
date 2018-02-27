@@ -265,6 +265,20 @@ public class DiaryController extends Controller {
 		}
 	}
 
+	public void searchPatientBytext() {
+		int pageIndex = getParaToInt("pageIndex", 1);
+		int pageSize = getParaToInt("pageSize", 10);
+		String seachtext = getPara("seachtext");
+		try {
+			Page<Patient> recordDayPage = Patient.dao.paginate(pageIndex, pageSize, "SELECT *",
+					"FROM patient WHERE pno LIKE '%" + seachtext + "%' OR NAME LIKE '%" + seachtext + "%'");
+			renderJson(recordDayPage);
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			renderJson(ex.toString());
+		}
+	}
+
 	// 删除患者信息
 	public void deletePatientByPid() {
 		int pid = getParaToInt("pid", 0);
@@ -379,8 +393,9 @@ public class DiaryController extends Controller {
 	// 修改记录信息不含有图片
 	public void updateRecord() {
 		List<String> pathList = new ArrayList<>();
-		int uid = 1; // 用户id
-		int pid = 1; // 病人id
+		int uid = getParaToInt("uid", 0);
+		int pid = getParaToInt("pid", 0);// 病人id
+		int pro_id = getParaToInt("pro_id", 3);// 病人id
 		String netPath = getPara("netPath");
 		String[] ary = netPath.split(",");
 		for (String s : ary) {
@@ -392,10 +407,15 @@ public class DiaryController extends Controller {
 		String ftime = ConstantsUtil.getDateFormat4mysql();
 		int rid = getParaToInt("rid", 0);
 		try {
-			if (rid == 0)
+			if (rid == 0) {
+				if (pro_id == 3) {
+					Patient patient = Patient.dao.findFirst(
+							"SELECT p.* FROM patient p INNER JOIN userapp u ON p.pno=u.lname and u.uid = ?", uid);
+					pid = patient.getInt("pid");
+				}
 				RecordBean.CreatRecord(pathList, uid, pid, title, content, ftime);
-			else {
-				RecordBean.UpdateRecord(pathList, uid, pid, title, content, ftime, rid);
+			} else {
+				RecordBean.UpdateRecord(pathList, title, content, ftime, rid);
 			}
 		} catch (Exception ex) {
 			// ex.printStackTrace();
@@ -430,8 +450,9 @@ public class DiaryController extends Controller {
 					pathList.add(datePath);
 				}
 			}
-			int uid = 1; // 用户id
-			int pid = 1; // 病人id
+			int uid = getParaToInt("uid", 0);
+			int pid = getParaToInt("pid", 0);// 病人id
+			int pro_id = getParaToInt("pro_id", 3);// 病人id
 			String netPath = getPara("netPath");
 			String[] ary = netPath.split(",");
 			for (String s : ary) {
@@ -442,10 +463,15 @@ public class DiaryController extends Controller {
 			String content = getPara("content");
 			String ftime = ConstantsUtil.getDateFormat4mysql();
 			int rid = getParaToInt("rid", 0);
-			if (rid == 0)
+			if (rid == 0) {
+				if (pro_id == 3) {
+					Patient patient = Patient.dao.findFirst(
+							"SELECT p.* FROM patient p INNER JOIN userapp u ON p.pno=u.lname and u.uid = ?", uid);
+					pid = patient.getInt("pid");
+				}
 				RecordBean.CreatRecord(pathList, uid, pid, title, content, ftime);
-			else
-				RecordBean.UpdateRecord(pathList, uid, pid, title, content, ftime, rid);
+			} else
+				RecordBean.UpdateRecord(pathList, title, content, ftime, rid);
 			// 存储路径
 		} catch (Exception ex) {
 			// ex.printStackTrace();

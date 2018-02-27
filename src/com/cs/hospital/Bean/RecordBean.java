@@ -8,10 +8,8 @@ import com.cs.hospital.model.Image;
 import com.cs.hospital.model.Patient;
 import com.cs.hospital.model.RecordDay;
 import com.cs.hospital.model.UserApp;
-import com.cs.hospital.util.ConstantsUtil;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.IAtom;
-import com.jfinal.plugin.activerecord.Record;
 
 public class RecordBean {
 
@@ -41,13 +39,12 @@ public class RecordBean {
 		});
 	}
 
-	public static boolean UpdateRecord(List<String> pathList, int uid, int pid, String title, String content,
-			String utime, int rid) {
+	public static boolean UpdateRecord(List<String> pathList, String title, String content, String utime, int rid) {
 		return Db.tx(new IAtom() {
 			public boolean run() throws SQLException {
 
-				int count1 = Db.update("update recordday set uid = ?, pid = ?, title = ?, content = ? where rid = ?",
-						uid, pid, title, content, rid);
+				int count1 = Db.update("update recordday set  title = ?, content = ?, utime = ? where rid = ?", title,
+						content, utime, rid);
 						// Record record = Db.findById("recordday",
 						// rid).set("uid", uid).set("pid", pid).set("title",
 						// title)
