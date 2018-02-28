@@ -341,7 +341,7 @@ public class DiaryController extends Controller {
 			if (rid != 0) {
 
 				List<Message> messageList = Message.dao.find(
-						"SELECT m.*,u.name FROM message m LEFT JOIN userapp u ON m.uid = u.uid WHERE m.isshow = 1 AND u.isshow = 1 AND m.rid = ? ORDER BY m.time",
+						"SELECT m.*,u.name,u.uurl FROM message m LEFT JOIN userapp u ON m.uid = u.uid WHERE m.isshow = 1 AND u.isshow = 1 AND m.rid = ? ORDER BY m.time",
 						rid);
 				renderJson(messageList);
 			} else {
