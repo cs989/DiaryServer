@@ -113,7 +113,7 @@ public class DiaryController extends Controller {
 	// 创建患者信息（不含图片）
 	public void creategPatient() {
 		String pno = getPara("pno");
-		int uid = getParaToInt("uid", 1);
+		int uid = getParaToInt("uid", 0);
 		String name = getPara("name");
 		String sex = getPara("sex");
 		String birthday = getPara("birthday");
@@ -159,7 +159,7 @@ public class DiaryController extends Controller {
 				datePath = ConstantsUtil.getDateFormat() + "/" + fileName;
 			}
 			String pno = getPara("pno");
-			int uid = getParaToInt("uid", 1);
+			int uid = getParaToInt("uid", 0);
 			String name = getPara("name");
 			String sex = getPara("sex");
 			String birthday = getPara("birthday");
@@ -188,7 +188,7 @@ public class DiaryController extends Controller {
 	public void updatePatientByPid() {
 		int pid = getParaToInt("pid", 0);
 		String pno = getPara("pno");
-		int uid = getParaToInt("uid", 1);
+		int uid = getParaToInt("uid", 0);
 		String name = getPara("name");
 		String sex = getPara("sex");
 		String birthday = getPara("birthday");
@@ -230,7 +230,7 @@ public class DiaryController extends Controller {
 			}
 			int pid = getParaToInt("pid", 0);
 			String pno = getPara("pno");
-			int uid = getParaToInt("uid", 1);
+			int uid = getParaToInt("uid", 0);
 			String name = getPara("name");
 			String sex = getPara("sex");
 			String birthday = getPara("birthday");
@@ -358,7 +358,7 @@ public class DiaryController extends Controller {
 
 		String content = getPara("content");
 		int rid = getParaToInt("rid", 0);
-		int uid = getParaToInt("uid", 1);
+		int uid = getParaToInt("uid", 0);
 		String time = ConstantsUtil.getDateFormat4mysql();
 		try {
 			if (rid != 0 && uid != 0) {
@@ -501,8 +501,13 @@ public class DiaryController extends Controller {
 		String password = getPara("password");
 		String uurl = getPara("uurl");
 		try {
-			RecordBean.CreateUser(name, sex, tel, ptime, lname, password, uurl);
-			renderJson("success");
+			UserApp userapp = UserApp.dao.findFirst("SELECT * FROM userapp u where u.lname = ?", lname);
+			if (userapp == null) {
+				RecordBean.CreateUser(name, sex, tel, ptime, lname, password, uurl);
+				renderJson("success");
+			} else {
+				renderJson("用户名已存在！");
+			}
 		} catch (Exception ex) {
 			// ex.printStackTrace();
 			renderJson(ex.toString());
@@ -535,8 +540,14 @@ public class DiaryController extends Controller {
 			String lname = getPara("lname");
 			String password = getPara("password");
 			String uurl = datePath;
-			RecordBean.CreateUser(name, sex, tel, ptime, lname, password, uurl);
-			renderJson("success");
+			UserApp userapp = UserApp.dao.findFirst("SELECT * FROM userapp u where u.lname = ?", lname);
+			if (userapp == null) {
+
+				RecordBean.CreateUser(name, sex, tel, ptime, lname, password, uurl);
+				renderJson("success");
+			} else {
+				renderJson("用户名已存在！");
+			}
 		} catch (Exception ex) {
 			// ex.printStackTrace();
 			renderJson(ex.toString());
@@ -545,7 +556,7 @@ public class DiaryController extends Controller {
 
 	// 修改患者信息（不含图片）
 	public void updateUserByUid() {
-		int uid = getParaToInt("uid", 1);
+		int uid = getParaToInt("uid", 0);
 		String name = getPara("name");
 		String sex = getPara("sex");
 		String tel = getPara("tel");
@@ -584,7 +595,7 @@ public class DiaryController extends Controller {
 
 				datePath = ConstantsUtil.getDateFormat() + "/" + fileName;
 			}
-			int uid = getParaToInt("uid", 1);
+			int uid = getParaToInt("uid", 0);
 			String name = getPara("name");
 			String sex = getPara("sex");
 			String tel = getPara("tel");
