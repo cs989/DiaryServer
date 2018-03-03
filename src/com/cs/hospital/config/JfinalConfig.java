@@ -27,18 +27,18 @@ public class JfinalConfig extends JFinalConfig {
 	@Override
 	public void configConstant(Constants me) {
 		me.setBaseUploadPath(ConstantsUtil.filePath);
-		me.setMaxPostSize(100*1024*1024);//最大传输为100M
+		me.setMaxPostSize(100 * 1024 * 1024);// 最大传输为100M
 		me.setDevMode(true);
 	}
 
 	@Override
 	public void configRoute(Routes me) {
-		me.add("Diary",DiaryController.class);
-//		me.add("/Message", MessageController.class);
-//		me.add("/Patient", PatientController.class);
-//		me.add("/login", LoginController.class);
-//		me.add("/RecordDay", RecordDayController.class);
-//		me.add("/user", UserController.class);
+		me.add("Diary", DiaryController.class);
+		// me.add("/Message", MessageController.class);
+		// me.add("/Patient", PatientController.class);
+		// me.add("/login", LoginController.class);
+		// me.add("/RecordDay", RecordDayController.class);
+		// me.add("/user", UserController.class);
 	}
 
 	@Override
@@ -56,24 +56,24 @@ public class JfinalConfig extends JFinalConfig {
 
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(dp);
 
-//		arp.addMapping("Department", Department.class);
+		// arp.addMapping("Department", Department.class);
 		arp.addMapping("Department", "did", Department.class); // 定义
-//		arp.addMapping("Image", Image.class);
+		// arp.addMapping("Image", Image.class);
 		arp.addMapping("Image", "iid", Image.class); // 定义
-//		arp.addMapping("Message", Message.class);
+		// arp.addMapping("Message", Message.class);
 		arp.addMapping("Message", "mid", Message.class); // 定义
-//		arp.addMapping("Patient", Patient.class);
+		// arp.addMapping("Patient", Patient.class);
 		arp.addMapping("Patient", "pid", Patient.class); // 定义
-//		arp.addMapping("Profession", Profession.class);
+		// arp.addMapping("Profession", Profession.class);
 		arp.addMapping("Profession", "pid", Profession.class); // 定义
-//		arp.addMapping("RecordDay", RecordDay.class);
+		// arp.addMapping("RecordDay", RecordDay.class);
 		arp.addMapping("RecordDay", "rid", RecordDay.class); // 定义
-//		arp.addMapping("UserApp", UserApp.class);
+		// arp.addMapping("UserApp", UserApp.class);
 		arp.addMapping("UserApp", "uid", UserApp.class); // 定义
-//		arp.addMapping("Video", Video.class);
+		// arp.addMapping("Video", Video.class);
 		arp.addMapping("Video", "did", Video.class); // 定义
-		arp.addMapping("Focus", "fid", Focus.class); // 定义
-		arp.addMapping("Version", "vid", Version.class); // 定义
+		arp.addMapping("focus", "fid", Focus.class); // 定义
+		arp.addMapping("version", "vid", Version.class); // 定义
 
 		me.add(arp);
 	}

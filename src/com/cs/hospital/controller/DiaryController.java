@@ -51,7 +51,7 @@ public class DiaryController extends Controller {
 				try {
 					Page<RecordDay> recordDayPage = RecordDay.dao.paginate(pageIndex, pageSize,
 							"SELECT r.rid,r.pid,r.uid,r.title,r.content,r.ftime,u.name,p.purl,m.msg_count",
-							"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message WHERE isshow = 1 GROUP BY rid ) m ON r.rid = m.rid WHERE r.isshow = 1 AND r.pid IN (SELECT p.pid FROM patient p INNER JOIN userapp u WHERE  p.pno=u.lname AND u.uid=?) ORDER BY r.ftime DESC",
+							"FROM recordday r LEFT JOIN userapp u  ON  r.uid = u.uid LEFT JOIN patient p ON r.pid = p.pid LEFT JOIN (SELECT rid,COUNT(rid) msg_count FROM message WHERE isshow = 1 GROUP BY rid ) m ON r.rid = m.rid WHERE r.isshow = 1 AND r.pid IN (SELECT p.pid FROM patient p INNER JOIN userapp u WHERE  p.pno=u.lname AND u.uid =?) ORDER BY r.ftime DESC",
 							uid);
 					renderJson(recordDayPage);
 				} catch (Exception ex) {
