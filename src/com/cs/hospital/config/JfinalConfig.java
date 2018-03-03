@@ -50,7 +50,7 @@ public class JfinalConfig extends JFinalConfig {
 	public void configPlugin(Plugins me) {
 		String jdbcUrl = "jdbc:mysql://localhost:3306/diary";
 		String userName = "root";
-		String password = "root";
+		String password = "HUAIhuai989";
 		DruidPlugin dp = new DruidPlugin(jdbcUrl, userName, password);
 		me.add(dp);
 
@@ -72,8 +72,8 @@ public class JfinalConfig extends JFinalConfig {
 		arp.addMapping("UserApp", "uid", UserApp.class); // 定义
 //		arp.addMapping("Video", Video.class);
 		arp.addMapping("Video", "did", Video.class); // 定义
-		arp.addMapping("focus", "fid", Focus.class); // 定义
-		arp.addMapping("version", "vid", Version.class); // 定义
+		arp.addMapping("Focus", "fid", Focus.class); // 定义
+		arp.addMapping("Version", "vid", Version.class); // 定义
 
 		me.add(arp);
 	}

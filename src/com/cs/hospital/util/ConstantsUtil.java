@@ -7,8 +7,8 @@ import java.util.Random;
 
 public class ConstantsUtil {
 
-	public static String filePath = "D:/software/apache-tomcat-7.0.84-windows-x64/apache-tomcat-7.0.84/webapps/upload/";
-
+//	public static String filePath = "D:/software/apache-tomcat-7.0.84-windows-x64/apache-tomcat-7.0.84/webapps/upload/";
+	public static String filePath = "/usr/local/tomcat7/webapps/upload/";
 	public static String getDateFormat() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMM");
 		return df.format(new Date());
